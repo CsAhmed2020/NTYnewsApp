@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,10 +43,18 @@ class HomeFragment : Fragment() {
     private fun observeOnNews(){
         viewModel.newsResponse.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Error -> Log.d("Adel Error", it.message.toString())
-                is Resource.Loading -> Log.d("Adel Loading", "loading")
+                is Resource.Error -> {
+                    Log.d("Ahmed Error", it.message.toString())
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this.requireContext(),it.message.toString(),Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Loading -> {
+                    Log.d("Ahmed Loading", "loading")
+                    binding.progressBar.visibility = View.VISIBLE
+                }
                 is Resource.Success -> {
-                    Log.d("Adel Success", it.data!!.response.docs.first().toString())
+                    Log.d("Ahmed Success", it.data!!.response.docs.first().toString())
+                    binding.progressBar.visibility = View.GONE
                     newsAdapter.submitList(it.data.response.docs)
                 }
             }
